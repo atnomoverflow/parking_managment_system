@@ -1,15 +1,14 @@
 from django.db import models
-from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 
 class ProfileUser(models.Model):
-    pass
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
 
-
-class User(AbstractBaseUser):
-    user_detail = models.ForeignKey(ProfileUser, on_delete=models.CASCADE)
+    def __str__(self):
+        return str(self.user)
 
 
 class Car(models.Model):
