@@ -14,8 +14,8 @@ media
 # Environments
 .env
 .venv
-blockchainvenv/
-brownie_env/
+backend django/blockchainvenv/
+smart contract/brownie_env/
 .history
 .hypothesis/
 # brownie
