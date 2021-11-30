@@ -23,9 +23,8 @@ class Login extends StatelessWidget {
                     _checkBox(),
                     GestureDetector(
                       child: const Text('register'),
-                      onTap: ()=>Navigator.pushNamed(context, "/signup"),
+                      onTap: () => Navigator.pushNamed(context, "/signup"),
                     ),
-
                   ],
                 ),
                 _button(formBloc),
@@ -40,35 +39,33 @@ class Login extends StatelessWidget {
 
   Widget _emailField(FormBloc? formBloc) {
     return StreamBuilder<String>(
-      stream: formBloc?.email,
-      builder: (context, snapshot) {
-        return TextField(
-          keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(
-            hintText: "example@xyz.com",
-            labelText: 'Email',
-          ),
-          onChanged: formBloc?.changeEmail,
-        );
-      }
-    );
+        stream: formBloc?.email,
+        builder: (context, snapshot) {
+          return TextField(
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              hintText: "example@xyz.com",
+              labelText: 'Email',
+            ),
+            onChanged: formBloc?.changeEmail,
+          );
+        });
   }
 
   Widget _passwordField(FormBloc? formBloc) {
     return StreamBuilder<String>(
-      stream: formBloc?.password,
-      builder: (context, snapshot) {
-        return TextField(
-          obscureText: true,
-          decoration: InputDecoration(
-            hintText: "Password",
-            labelText: 'Password',
-            errorText: snapshot.hasError ? '${snapshot.error}' : null,
-          ),
-          onChanged: formBloc?.changePassword,
-        );
-      }
-    );
+        stream: formBloc?.password,
+        builder: (context, snapshot) {
+          return TextField(
+            obscureText: true,
+            decoration: InputDecoration(
+              hintText: "Password",
+              labelText: 'Password',
+              errorText: snapshot.hasError ? '${snapshot.error}' : null,
+            ),
+            onChanged: formBloc?.changePassword,
+          );
+        });
   }
 
   Widget _checkBox() {
@@ -82,23 +79,27 @@ class Login extends StatelessWidget {
 
   Widget _button(FormBloc? formBloc) {
     return StreamBuilder<Object>(
-      stream: formBloc?.submitValidForm,
-      builder: (context, snapshot) {
-        return Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ElevatedButton(
-                onPressed: snapshot.hasError?null:formBloc?.submit,
-                clipBehavior: Clip.hardEdge,
-                child: const Icon(Icons.arrow_forward),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.amber,
-                  onPrimary: Colors.white,
-                  elevation: 10,
-                  onSurface: Colors.blueGrey,
-                  textStyle: const TextStyle(color: Colors.white),
-                )));
-      }
-    );
+        stream: formBloc?.submitValidForm,
+        builder: (context, snapshot) {
+          return Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ElevatedButton(
+                  onPressed: () {
+                    if (snapshot.hasError) {
+                      return null;
+                    }
+                    return formBloc!.login(context);
+                  },
+                  clipBehavior: Clip.hardEdge,
+                  child: const Icon(Icons.arrow_forward),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.amber,
+                    onPrimary: Colors.white,
+                    elevation: 10,
+                    onSurface: Colors.blueGrey,
+                    textStyle: const TextStyle(color: Colors.white),
+                  )));
+        });
   }
 
   Widget _forgotPasswordButton(BuildContext context) {

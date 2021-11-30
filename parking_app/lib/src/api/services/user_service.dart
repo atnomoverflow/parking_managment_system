@@ -8,25 +8,26 @@ import 'package:parking_app/src/api/api_config.dart';
 import 'package:http/http.dart' as http;
 
 abstract class IUserService {
-  Future<bool> login(UserLogin userLogin);
-  Future<JWTToken> register(UserLogin userLogin);
+  Future<JWTToken> login(UserLogin userLogin);
+  Future<JWTToken> signup(UserLogin userLogin);
   Future<UserDetail> getUser();
 }
 
 class UserService extends IUserService {
   static var client = http.Client();
   @override
-  Future<bool> login(UserLogin userLogin) async {
-    final http.Response response = await client.post(
+  Future<JWTToken> login(UserLogin userLogin) async {
+        var response = await client.post(
       Uri.parse(AppConfig.login),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: userLogin.toJson(),
     );
+
     if (response.statusCode == 200) {
       await ShairedServices.setToken(JWTToken.fromJson(response.body));
-      return true;
+      return JWTToken.fromJson(response.body);
     } else {
       throw Exception(jsonDecode(response.body));
     }
@@ -51,7 +52,7 @@ class UserService extends IUserService {
   }
 
   @override
-  Future<JWTToken> register(UserLogin userLogin) {
+  Future<JWTToken> signup(UserLogin userLogin) {
     throw UnimplementedError();
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:parking_app/src/api/services/shaire_service.dart';
+import 'package:parking_app/src/api/services/user_service.dart';
 import 'package:parking_app/src/blocs/form_provider.dart';
 import 'package:parking_app/src/ui/forgot_password_ui.dart';
 import 'package:parking_app/src/ui/home_ui.dart';
@@ -16,22 +18,23 @@ class MyApp extends StatelessWidget {
         title: 'Parking_app',
         darkTheme: ThemeData.dark(),
         themeMode: ThemeMode.dark,
-        initialRoute: '/',
-        onGenerateRoute: onGenerateRoute,
+        home: FutureBuilder(
+            future: ShairedServices.getToken(),
+            builder: (_, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else {
+                return Login();
+              }
+            }),
+        routes: {
+          '/home':(_)=>Home(),
+          '/login':(_)=>Login(),
+          '/signup':(_)=>Signup(),
+          '/forgot_password':(_)=>ForgotPassword(),
+
+        },
       ),
     );
-  }
-
-  Route onGenerateRoute(RouteSettings routeSettings) {
-    if (routeSettings.name == "/login") {
-      return MaterialPageRoute(builder: (_) => Login());
-    }
-    if (routeSettings.name == "/forgot_password") {
-      return MaterialPageRoute(builder: (_) => ForgotPassword());
-    }
-    if (routeSettings.name == "/sign_up") {
-      return MaterialPageRoute(builder: (_) => Signup());
-    }
-    return MaterialPageRoute(builder: (_) => Home());
   }
 }
