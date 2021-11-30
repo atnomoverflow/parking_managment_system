@@ -9,7 +9,7 @@ from .permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-"''''"
+
 class CarViewSet(viewsets.ModelViewSet):
 
     queryset = Car.objects.all()
