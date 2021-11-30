@@ -1,6 +1,10 @@
 from rest_framework import viewsets, generics
-from .models import Car
-from .serializers import CarSerializer, UserProfileSerializer
+from .models import Car, ProfileUser
+from .serializers import (
+    CarSerializer,
+    RegisterSerializer,
+    UserProfileSerializer,
+)
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -14,7 +18,7 @@ class CarViewSet(viewsets.ModelViewSet):
 
 
 class RegisterAPI(generics.GenericAPIView):
-    serializer_class = UserProfileSerializer
+    serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -22,7 +26,7 @@ class RegisterAPI(generics.GenericAPIView):
         user = serializer.save()
         return Response(
             {
-                "user": UserProfileSerializer(
+                "user": RegisterSerializer(
                     user, context=self.get_serializer_context()
                 ).data,
                 "message": (
@@ -31,3 +35,11 @@ class RegisterAPI(generics.GenericAPIView):
                 ),
             }
         )
+
+
+class Userdetail(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserProfileSerializer
+
+    def get_object(self):
+        return ProfileUser.objects.get(user=self.request.user)
