@@ -19,8 +19,6 @@ export const AuthProvider = ({ children }) => {
   )
   let [loading, setLoading] = useState(true)
 
-
-
   let loginUser = async ({ username, password }) => {
     let response = await fetch('http://127.0.0.1:8000/token/', {
       method: 'POST',
@@ -35,9 +33,9 @@ export const AuthProvider = ({ children }) => {
       setAuthTokens(data)
       setUser(jwt_decode(data.access))
       localStorage.setItem('authTokens', JSON.stringify(data))
-      history.push('/')
+      return { "result": true, "error": "" }
     } else {
-      alert('Something went wrong!')
+      return { "result": false, "error": data }
     }
   }
 
@@ -45,7 +43,6 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens(null)
     setUser(null)
     localStorage.removeItem('authTokens')
-    history.push('/login')
   }
 
   // let updateToken = async ()=> {
