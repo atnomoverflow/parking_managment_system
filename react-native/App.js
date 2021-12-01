@@ -10,12 +10,32 @@ import {
   ResetPasswordScreen,
   Dashboard,
 } from './src/screens'
+import { AuthProvider } from './src/context/AuthContext'
 
 const Stack = createStackNavigator()
 
 export default function App() {
   return (
     <Provider theme={theme}>
+      <AuthProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="StartScreen"
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="StartScreen" component={StartScreen} />
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
+            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+            <Stack.Screen name="Dashboard" component={Dashboard} />
+            <Stack.Screen
+              name="ResetPasswordScreen"
+              component={ResetPasswordScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AuthProvider>
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="StartScreen"

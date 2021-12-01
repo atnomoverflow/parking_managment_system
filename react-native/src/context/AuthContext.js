@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
-import { useHistory } from 'react-router-dom'
+import React from 'react'
 
 const AuthContext = createContext()
 
@@ -19,10 +19,12 @@ export const AuthProvider = ({ children }) => {
   )
   let [loading, setLoading] = useState(true)
 
+
+  let loginUser = async ({ username, password }) => {
+    let response = await fetch('http://127.0.0.1:8000/token/', {
   const history = useHistory()
 
   let loginUser = async ({ username, password }) => {
-    e.preventDefault()
     let response = await fetch('http://127.0.0.1:8000/api/token/', {
       method: 'POST',
       headers: {
