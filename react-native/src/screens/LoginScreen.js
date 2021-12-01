@@ -13,13 +13,18 @@ import AuthContext from '../context/AuthContext'
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  let { loginUser } = useContext(AuthContext)
-  const onLoginPressed = () => {
-    loginUser({ username, password })
+  const [Erorr, setErorr] = useState()
+  let { loginUser } =  useContext(AuthContext)
+  const onLoginPressed = async () => {
+    let result= await loginUser({ username, password })
+    if(result.result===true){
     navigation.reset({
       index: 0,
       routes: [{ name: 'Dashboard' }],
     })
+    } else {
+      setErorr(result)
+    }
   }
 
   return (

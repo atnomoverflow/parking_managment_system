@@ -13,24 +13,42 @@ import { passwordValidator } from '../helpers/passwordValidator'
 import { nameValidator } from '../helpers/nameValidator'
 
 export default function RegisterScreen({ navigation }) {
-  const [username, setName] = useState({ value: '', error: '' })
+  const [username, setUsername] = useState({ value: '', error: '' })
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
 
-  const onSignUpPressed = () => {
+  const onSignUpPressed = async () => {
     const nameError = nameValidator(username.value)
     const emailError = emailValidator(email.value)
     const passwordError = passwordValidator(password.value)
     if (emailError || passwordError || nameError) {
-      setName({ ...username, error: nameError })
+      setUsername({ ...username, error: nameError })
       setEmail({ ...email, error: emailError })
       setPassword({ ...password, error: passwordError })
       return
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Dashboard' }],
-    })
+    let registerRequest = await fetch('http://127.0.0.1:8000/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: { username: username.value, email: email.value, password: password.value } }),
+    }
+    )
+    let registerResponce = await registerRequest.json()
+    console.log(registerResponce)
+    if (registerRequest.status == 200) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'LoginScreen' }],
+      })
+    }
+    else {
+      setUsername({ ...username, error: registerResponce.user.username });
+      setEmail({ ...email, error: registerResponce.user.email });
+      setPassword({ ...password, error: registerResponce.user.password });
+
+    }
   }
 
   return (
@@ -42,7 +60,7 @@ export default function RegisterScreen({ navigation }) {
         label="UserName"
         returnKeyType="next"
         value={username.value}
-        onChangeText={(text) => setName({ value: text, error: '' })}
+        onChangeText={(text) => setUsername({ value: text, error: '' })}
         error={!!username.error}
         errorText={username.error}
       />

@@ -1,6 +1,10 @@
 import React from 'react'
 import { createContext, useState, useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
+<<<<<<< HEAD
+=======
+import React from 'react'
+>>>>>>> cf8fe7730c7308a8c5930f95e8bba7f8e25da953
 
 const AuthContext = createContext()
 
@@ -33,8 +37,12 @@ export const AuthProvider = ({ children }) => {
       setAuthTokens(data)
       setUser(jwt_decode(data.access))
       localStorage.setItem('authTokens', JSON.stringify(data))
+<<<<<<< HEAD
+=======
+      return { "result": true, "error": "" }
+>>>>>>> cf8fe7730c7308a8c5930f95e8bba7f8e25da953
     } else {
-      alert('Something went wrong!')
+      return { "result": false, "error": data }
     }
   }
 
