@@ -1,30 +1,60 @@
-import React from 'react'
-import Background from '../components/Background'
-import Logo from '../components/Logo'
-import Header from '../components/Header'
-import Paragraph from '../components/Paragraph'
-import Button from '../components/Button'
+import React, { useContext } from 'react'
+import { NavigationContainer } from '@react-navigation/native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
-export default function Dashboard({ navigation }) {
+// Screens
+import HomeScreen from './HomeScreen'
+import CarScreen from './CarScreen'
+import ProfileScreen from './ProfileScreen'
+import PaymentScreen from './PaymentScreen'
+import LogsScreen from './LogsScreen'
+
+//Screen names
+const homeName = 'Home'
+const carName = 'Car'
+const logsName = 'Logs'
+const paymentName = 'Payment'
+const profileName = 'Profile'
+
+const Tab = createBottomTabNavigator()
+export default function Dashboard() {
   return (
-    <Background>
-      <Logo />
-      <Header>Let’s start</Header>
-      <Paragraph>
-        Your amazing app starts here. Open you favorite code editor and start
-        editing this project.
-      </Paragraph>
-      <Button
-        mode="outlined"
-        onPress={() =>
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'StartScreen' }],
-          })
-        }
-      >
-        Logout
-      </Button>
-    </Background>
+    <Tab.Navigator
+      initialRouteName={homeName}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName
+          let rn = route.name
+
+          if (rn === homeName) {
+            iconName = focused ? 'home' : 'home-outline'
+          } else if (rn === carName) {
+            iconName = focused ? 'car' : 'car-outline'
+          } else if (rn === logsName) {
+            iconName = focused ? 'list' : 'list-outline'
+          } else if (rn === paymentName) {
+            iconName = focused ? 'logo-usd' : 'logo-usd'
+          } else if (rn === profileName) {
+            iconName = focused ? 'person' : 'person-outline'
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: 'tomato',
+        inactiveTintColor: 'grey',
+        labelStyle: { paddingBottom: 10, fontSize: 10 },
+        style: { padding: 10, height: 70 },
+      }}
+    >
+      <Tab.Screen name={carName} component={CarScreen} />
+      <Tab.Screen name={logsName} component={LogsScreen} />
+      <Tab.Screen name={homeName} component={HomeScreen} />
+      <Tab.Screen name={paymentName} component={PaymentScreen} />
+      <Tab.Screen name={profileName} component={ProfileScreen} />
+    </Tab.Navigator>
   )
 }
