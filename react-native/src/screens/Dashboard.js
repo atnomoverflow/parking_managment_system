@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
@@ -46,7 +45,7 @@ export default function Dashboard() {
       tabBarOptions={{
         activeTintColor: 'tomato',
         inactiveTintColor: 'grey',
-        labelStyle: { paddingBottom: 10, fontSize: 10 },
+        labelStyle: { paddingBottom: 5, fontSize: 10 },
         style: {
           position: 'absolute',
           height: 70,
