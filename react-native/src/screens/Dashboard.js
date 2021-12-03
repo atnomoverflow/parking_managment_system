@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
-import { NavigationContainer } from '@react-navigation/native'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 // Screens
@@ -17,7 +16,8 @@ const logsName = 'Logs'
 const paymentName = 'Payment'
 const profileName = 'Profile'
 
-const Tab = createBottomTabNavigator()
+const Tab = createMaterialBottomTabNavigator()
+
 export default function Dashboard() {
   return (
     <Tab.Navigator

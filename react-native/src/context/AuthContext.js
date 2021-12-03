@@ -1,10 +1,25 @@
 import React from 'react'
 import { createContext, useState, useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
-
+import {
+  StartScreen,
+  LoginScreen,
+  RegisterScreen,
+  ResetPasswordScreen,
+  Dashboard,
+  CarScreen,
+  HomeScreen,
+  ProfileScreen,
+  LogsScreen,
+  PaymentScreen,
+} from '../screens'
+import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator } from '@react-navigation/stack'
+import { set } from 'react-native-reanimated'
 const AuthContext = createContext()
 
 export default AuthContext
+const Stack = createStackNavigator()
 
 export const AuthProvider = ({ children }) => {
   let [authTokens, setAuthTokens] = useState(() =>
@@ -88,7 +103,30 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={contextData}>
-      {loading ? null : children}
-    </AuthContext.Provider>
+      <NavigationContainer>
+        {
+          authTokens != null ? (
+            <Stack.Navigator >
+              <Stack.Screen name="Dashboard" component={Dashboard} />
+              {/* <Stack.Screen name="Car" component={CarScreen} />
+              <Stack.Screen name="Profile" component={ProfileScreen} />
+              <Stack.Screen name="Logs" component={LogsScreen} />
+              <Stack.Screen name="Payment" component={PaymentScreen} />
+              <Stack.Screen name="Home" component={HomeScreen} /> */}
+            </Stack.Navigator>
+          )
+            :(
+            <Stack.Navigator >
+              <Stack.Screen name="StartScreen" component={StartScreen} />
+              <Stack.Screen name="LoginScreen" component={LoginScreen} />
+              <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+              <Stack.Screen
+                name="ResetPasswordScreen"
+                component={ResetPasswordScreen}
+              />
+            </Stack.Navigator>)
+        }
+      </NavigationContainer>
+    </AuthContext.Provider >
   )
 }
