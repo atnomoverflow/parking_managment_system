@@ -47,7 +47,15 @@ export default function Dashboard() {
         activeTintColor: 'tomato',
         inactiveTintColor: 'grey',
         labelStyle: { paddingBottom: 10, fontSize: 10 },
-        style: { padding: 10, height: 70 },
+        style: {
+          position: 'absolute',
+          height: 70,
+          bottom: 25,
+          left: 20,
+          right: 20,
+          elevation: 0,
+          borderRadius: 15,
+        },
       }}
     >
       <Tab.Screen name={carName} component={CarScreen} />
