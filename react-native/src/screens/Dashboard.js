@@ -1,22 +1,23 @@
 import React, { useContext } from 'react'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 // Screens
 import HomeScreen from './HomeScreen'
 import CarScreen from './CarScreen'
 import ProfileScreen from './ProfileScreen'
-import PaymentScreen from './PaymentScreen'
+import BookingScreen from './BookingScreen'
 import LogsScreen from './LogsScreen'
 
 //Screen names
 const homeName = 'Home'
 const carName = 'Car'
 const logsName = 'Logs'
-const paymentName = 'Payment'
+const bookingName = 'Booking'
 const profileName = 'Profile'
 
-const Tab = createBottomTabNavigator()
+const Tab = createMaterialBottomTabNavigator()
+
 export default function Dashboard() {
   return (
     <Tab.Navigator
@@ -32,35 +33,31 @@ export default function Dashboard() {
             iconName = focused ? 'car' : 'car-outline'
           } else if (rn === logsName) {
             iconName = focused ? 'list' : 'list-outline'
-          } else if (rn === paymentName) {
-            iconName = focused ? 'logo-usd' : 'logo-usd'
+          } else if (rn === bookingName) {
+            iconName = focused ? 'calendar' : 'calendar-outline'
           } else if (rn === profileName) {
             iconName = focused ? 'person' : 'person-outline'
           }
+          size = 25
 
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />
         },
       })}
-      tabBarOptions={{
-        activeTintColor: 'tomato',
-        inactiveTintColor: 'grey',
-        labelStyle: { paddingBottom: 5, fontSize: 10 },
-        style: {
-          position: 'absolute',
-          height: 70,
-          bottom: 25,
-          left: 20,
-          right: 20,
-          elevation: 0,
-          borderRadius: 15,
-        },
+      barStyle={{
+        position: 'absolute',
+        bottom: 15,
+        left: 20,
+        right: 20,
+        borderRadius: 30,
+        backgroundColor: '#02acc9',
+        overflow: 'hidden',
       }}
     >
       <Tab.Screen name={carName} component={CarScreen} />
       <Tab.Screen name={logsName} component={LogsScreen} />
       <Tab.Screen name={homeName} component={HomeScreen} />
-      <Tab.Screen name={paymentName} component={PaymentScreen} />
+      <Tab.Screen name={bookingName} component={BookingScreen} />
       <Tab.Screen name={profileName} component={ProfileScreen} />
     </Tab.Navigator>
   )

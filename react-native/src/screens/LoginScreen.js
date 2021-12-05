@@ -17,12 +17,8 @@ export default function LoginScreen({ navigation }) {
   let { loginUser } =  useContext(AuthContext)
   const onLoginPressed = async () => {
     let result= await loginUser({ username, password })
-    if(result.result===true){
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Dashboard' }],
-    })
-    } else {
+    if(result.result!=true){
+     
       setErorr(result)
     }
   }
