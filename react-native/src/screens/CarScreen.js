@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component , useState , useEffect,useContext } from 'react'
 import {
   StyleSheet,
   Text,
@@ -8,30 +8,36 @@ import {
   FlatList,
 } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import AuthContext from '../context/AuthContext'
 
 export default class CarScreen extends Component {
   constructor(props) {
-    super(props)
+    super(props);
+
     this.state = {
-      data: [
-        {
-          id: 1,
-          image:
-            'https://upload.wikimedia.org/wikipedia/commons/6/65/Circle-icons-car.svg',
-          model: '2020',
-          matricule: '210 TUN 1323',
-          mark: 'Mercedes',
-        },
-        {
-          id: 2,
-          image:
-            'https://upload.wikimedia.org/wikipedia/commons/6/65/Circle-icons-car.svg',
-          model: '2013',
-          matricule: '134 TUN 4324',
-          mark: 'Golf',
-        },
-      ],
+      data: [],
+      isLoading: true
+    };
+  }
+
+  async getCars() {
+    try {
+      const {authTokens} = useContext(AuthContext)
+      const response = await fetch('http://127.0.0.1:8000/car/', {
+      method: 'GET',
+      headers:{Authorization: `Bearer ${authTokens?.access}`}}
+      );
+      const json = await response.json();
+      this.setState({ data: json.cars });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.setState({ isLoading: false });
     }
+  }
+
+  componentDidMount() {
+    this.getCars();
   }
 
   renderGroupMembers = (group) => {
@@ -54,18 +60,17 @@ export default class CarScreen extends Component {
   }
 
   render() {
+    const { data, isLoading } = this.state;
     return (
       <View>
         <FlatList
           style={styles.root}
-          data={this.state.data}
-          extraData={this.state}
+          data={this.data}
+          extraData={this}
           ItemSeparatorComponent={() => {
             return <View style={styles.separator} />
           }}
-          keyExtractor={(item) => {
-            return item.id
-          }}
+         
           renderItem={(item) => {
             const Group = item.item
             let mainContentStyle
@@ -74,7 +79,7 @@ export default class CarScreen extends Component {
             }
             return (
               <View style={styles.container}>
-                <Image source={{ uri: Group.image }} style={styles.avatar} />
+                <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Circle-icons-car.svg' }} style={styles.avatar} />
                 <View style={styles.content}>
                   <View style={mainContentStyle}>
                     <View style={styles.text}>
@@ -93,12 +98,7 @@ export default class CarScreen extends Component {
                   color="#041026"
                   onPress={() => this.props.navigation.navigate('Updatecar')}
                 />
-                <Ionicons
-                  name="trash-outline"
-                  size={25}
-                  color="red"
-                  onPress={() => this.props.navigation.navigate('Addcar')}
-                />
+                <Ionicons name="trash-outline" size={25} color="red" />
               </View>
             )
           }}

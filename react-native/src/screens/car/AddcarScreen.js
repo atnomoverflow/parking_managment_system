@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState , useContext} from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../../components/Background'
@@ -8,11 +8,28 @@ import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 import BackButton from '../../components/BackButton'
 import { theme } from '../../core/theme'
+import AuthContext from '../../context/AuthContext'
 
 export default function AddcarScreen({ navigation }) {
-  const [matricule, setMatricule] = useState({ value: '', error: '' })
-  const [model, setModel] = useState({ value: '', error: '' })
-  const [mark, setMark] = useState({ value: '', error: '' })
+
+  const [matricule, setMatricule] = useState("")
+  const [model, setModel] = useState("")
+  const [mark, setMark] = useState("")
+  const {authTokens} = useContext(AuthContext)
+  console.log(authTokens?.access)
+  const inserData = () => {
+    fetch('http://127.0.0.1:8000/car/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authTokens?.access}`
+      },
+      body: JSON.stringify({ matricule: matricule, model: model, mark: mark }),
+    })
+      .then((resp) => resp.json())
+      .then((data) => navigation.navigate('Car'))
+  }
+
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
@@ -22,7 +39,7 @@ export default function AddcarScreen({ navigation }) {
         label="Matricule"
         returnKeyType="next"
         value={matricule.value}
-        onChangeText={(text) => setMatricule({ value: text, error: '' })}
+        onChangeText={(text) => setMatricule(text)}
         error={!!matricule.error}
         errorText={matricule.error}
       />
@@ -30,7 +47,7 @@ export default function AddcarScreen({ navigation }) {
         label="Model"
         returnKeyType="next"
         value={model.value}
-        onChangeText={(text) => setModel({ value: text, error: '' })}
+        onChangeText={(text) => setModel(text)}
         error={!!model.error}
         errorText={model.error}
       />
@@ -42,7 +59,7 @@ export default function AddcarScreen({ navigation }) {
         error={!!mark.error}
         errorText={mark.error}
       />
-      <Button mode="contained" style={{ marginTop: 24 }}>
+      <Button mode="contained" style={{ marginTop: 24 }} onPress={() => inserData()}>
         Add
       </Button>
     </Background>
