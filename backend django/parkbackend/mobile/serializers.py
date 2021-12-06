@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Car, User, ProfileUser
+from .models import Car, User, ProfileUser, Reservation
+import datetime
 
 
 class CarSerializer(serializers.ModelSerializer):
@@ -48,3 +49,25 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfileUser
         fields = "__all__"
+
+
+class ReservationSerialzer(serializers.ModelSerializer):
+    class Meta:
+        model = Reservation
+        fields = "__all__"
+
+    # Additional custom validator for start_date / finish_date fields
+    def clean(self):
+        data = self.cleaned_data
+        start_date = data["start_date"]
+        finish_date = data["finish_date"]
+
+        if start_date > finish_date:
+            raise serializers.ValidationError("Wrong start and finish dates.")
+
+        if start_date < datetime.date.today():
+            raise serializers.ValidationError("Start date in the past.")
+
+        return data
+
+

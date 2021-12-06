@@ -17,3 +17,12 @@ class Car(models.Model):
     model = models.IntegerField()
     mark = models.CharField(max_length=50)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class Reservation(models.Model):
+    start_date = models.DateField()
+    finish_date = models.DateField()
+    parking_space_number = models.CharField(max_length=4)
+    owner = models.ForeignKey(
+        User, null=True, on_delete=models.CASCADE
+    )
