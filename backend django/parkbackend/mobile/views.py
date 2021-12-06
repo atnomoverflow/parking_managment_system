@@ -75,10 +75,10 @@ def getLogsOfUser(user_id):
     ]
     return logs
 
-# class GetLogsViewSet(viewsets.ModelViewSet):
-#         permission_classes = [IsAuthenticated]
-
-#     def post():
+class GetLogsViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        request.user.
 
 
 class CarViewSet(viewsets.ModelViewSet):
