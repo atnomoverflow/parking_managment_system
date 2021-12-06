@@ -78,4 +78,4 @@ class ChangeUserProfileSerializer(serializers.Serializer):
     """
     password = serializers.CharField()
     email = serializers.EmailField()
-    username = serializers.EmailField()
+    username = serializers.CharField()

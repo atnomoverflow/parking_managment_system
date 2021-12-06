@@ -30,7 +30,7 @@ const useAxios = () => {
         localStorage.setItem('authTokens', JSON.stringify(response.data))
         
         setAuthTokens(response.data)
-        setUser(jwt_decode(response.data.access))
+        setUser(jwt_decode(response.data))
         
         req.headers.Authorization = `Bearer ${response.data.access}`
         return req

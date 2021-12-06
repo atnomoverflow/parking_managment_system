@@ -23,14 +23,11 @@ export default function EditProfileScreen({ navigation }) {
       username: Username,
       password: Password,
       email: Email
-    })
-      .then(
-        (responce) => console.log(responce)
-        
+    }).then(
+        (responce) => console.log(responce)  
       ).catch(
         (error) => console.log(error)
       )
-    //console.log(userProfileResponce)
   }
   return (
     <Background>
