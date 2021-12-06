@@ -11,7 +11,10 @@ import {
   HomeScreen,
   ProfileScreen,
   LogsScreen,
-  PaymentScreen,
+  BookingScreen,
+  AddcarScreen,
+  UpdatecarScreen,
+  EditProfileScreen,
 } from '../screens'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -104,29 +107,30 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={contextData}>
       <NavigationContainer>
-        {
-          authTokens != null ? (
-            <Stack.Navigator >
-              <Stack.Screen name="Dashboard" component={Dashboard} />
-              {/* <Stack.Screen name="Car" component={CarScreen} />
+        {authTokens != null ? (
+          <Stack.Navigator>
+            <Stack.Screen name="Dashboard" component={Dashboard} />
+            {/* <Stack.Screen name="Car" component={CarScreen} />
               <Stack.Screen name="Profile" component={ProfileScreen} />
               <Stack.Screen name="Logs" component={LogsScreen} />
-              <Stack.Screen name="Payment" component={PaymentScreen} />
+              <Stack.Screen name="Booking" component={BookingScreen} />
               <Stack.Screen name="Home" component={HomeScreen} /> */}
-            </Stack.Navigator>
-          )
-            :(
-            <Stack.Navigator >
-              <Stack.Screen name="StartScreen" component={StartScreen} />
-              <Stack.Screen name="LoginScreen" component={LoginScreen} />
-              <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-              <Stack.Screen
-                name="ResetPasswordScreen"
-                component={ResetPasswordScreen}
-              />
-            </Stack.Navigator>)
-        }
+            <Stack.Screen name="Addcar" component={AddcarScreen} />
+            <Stack.Screen name="Updatecar" component={UpdatecarScreen} />
+            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+          </Stack.Navigator>
+        ) : (
+          <Stack.Navigator>
+            <Stack.Screen name="StartScreen" component={StartScreen} />
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
+            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+            <Stack.Screen
+              name="ResetPasswordScreen"
+              component={ResetPasswordScreen}
+            />
+          </Stack.Navigator>
+        )}
       </NavigationContainer>
-    </AuthContext.Provider >
+    </AuthContext.Provider>
   )
 }
