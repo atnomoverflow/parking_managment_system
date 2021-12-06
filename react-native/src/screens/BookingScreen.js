@@ -1,49 +1,23 @@
 import React, { useState } from 'react'
-import { View, Button, Platform } from 'react-native'
-import DateTimePicker from '@react-native-community/datetimepicker'
+import { View, Platform } from 'react-native'
+import Background from '../components/Background'
+import Logo from '../components/Logo'
+import Header from '../components/Header'
+import Button from '../components/Button'
+import TextInput from '../components/TextInput'
+import BackButton from '../components/BackButton'
 
 export default function BookingScreen({ navigation }) {
-  const [date, setDate] = useState(new Date())
-  const [mode, setMode] = useState('date')
-  const [show, setShow] = useState(false)
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date
-    setShow(Platform.OS === 'android')
-    setDate(currentDate)
-  }
-
-  const showMode = (currentMode) => {
-    setShow(true)
-    setMode(currentMode)
-  }
-
-  const showDatepicker = () => {
-    showMode('date')
-  }
-
-  const showTimepicker = () => {
-    showMode('time')
-  }
-
   return (
-    <View>
-      <View>
-        <Button onPress={showDatepicker} title="Show date picker!" />
-      </View>
-      <View>
-        <Button onPress={showTimepicker} title="Show time picker!" />
-      </View>
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={onChange}
-        />
-      )}
-    </View>
+    <Background>
+      <BackButton goBack={navigation.goBack} />
+      <Logo />
+      <Header>Reservation</Header>
+      <TextInput label="DD/MM/AAAA" returnKeyType="next" />
+
+      <Button mode="contained" style={{ marginTop: 24 }}>
+        Submit
+      </Button>
+    </Background>
   )
 }
