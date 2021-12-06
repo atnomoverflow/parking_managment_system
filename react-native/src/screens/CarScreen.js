@@ -1,4 +1,4 @@
-import React, { Component , useState , useEffect,useContext } from 'react'
+import React, { Component, useState, useEffect, useContext } from 'react'
 import {
   StyleSheet,
   Text,
@@ -10,37 +10,42 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AuthContext from '../context/AuthContext'
 
-export default class CarScreen extends Component {
-  constructor(props) {
-    super(props);
+export default function CarScreen(props) {
 
-    this.state = {
-      data: [],
-      isLoading: true
-    };
+
+  const [Data, setData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const { authTokens } = useContext(AuthContext)
+
+
+
+
+  const getCars = () => {
+      const response = fetch('http://127.0.0.1:8000/car/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authTokens?.access}`
+        }
+      }
+      ).then(
+        (response)=> response.json()
+      ).then(
+        (data) => {
+          setData(data)
+          setIsLoading(false)
+        }
+      )
   }
 
-  async getCars() {
-    try {
-      const {authTokens} = useContext(AuthContext)
-      const response = await fetch('http://127.0.0.1:8000/car/', {
-      method: 'GET',
-      headers:{Authorization: `Bearer ${authTokens?.access}`}}
-      );
-      const json = await response.json();
-      this.setState({ data: json.cars });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      this.setState({ isLoading: false });
+  useEffect(() => {
+    getCars()
+    return () => {
+      setData([])
     }
-  }
+  }, [])
 
-  componentDidMount() {
-    this.getCars();
-  }
-
-  renderGroupMembers = (group) => {
+  const renderGroupMembers = (group) => {
     if (group.members) {
       return (
         <View style={styles.groupMembersContent}>
@@ -59,62 +64,59 @@ export default class CarScreen extends Component {
     return null
   }
 
-  render() {
-    const { data, isLoading } = this.state;
-    return (
-      <View>
-        <FlatList
-          style={styles.root}
-          data={this.data}
-          extraData={this}
-          ItemSeparatorComponent={() => {
-            return <View style={styles.separator} />
-          }}
-         
-          renderItem={(item) => {
-            const Group = item.item
-            let mainContentStyle
-            if (Group.attachment) {
-              mainContentStyle = styles.mainContent
-            }
-            return (
-              <View style={styles.container}>
-                <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Circle-icons-car.svg' }} style={styles.avatar} />
-                <View style={styles.content}>
-                  <View style={mainContentStyle}>
-                    <View style={styles.text}>
-                      <Text style={styles.groupName}>{Group.model}</Text>
-                    </View>
-                    <Text style={styles.countMembers}>
-                      Matricule: {Group.matricule}
-                    </Text>
-                    <Text style={styles.timeAgo}>Mark : {Group.mark}</Text>
-                    {this.renderGroupMembers(Group)}
+  return (
+    <View>
+      <FlatList
+        style={styles.root}
+        data={Data}
+
+        ItemSeparatorComponent={() => {
+          return <View style={styles.separator} />
+        }}
+
+        renderItem={(item) => {
+          const Group = item.item
+          let mainContentStyle
+          if (Group.attachment) {
+            mainContentStyle = styles.mainContent
+          }
+          return (
+            <View style={styles.container}>
+              <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Circle-icons-car.svg' }} style={styles.avatar} />
+              <View style={styles.content}>
+                <View style={mainContentStyle}>
+                  <View style={styles.text}>
+                    <Text style={styles.groupName}>{Group.model}</Text>
                   </View>
+                  <Text style={styles.countMembers}>
+                    Matricule: {Group.matricule}
+                  </Text>
+                  <Text style={styles.timeAgo}>Mark : {Group.mark}</Text>
+                  {renderGroupMembers(Group)}
                 </View>
-                <Ionicons
-                  name="settings-outline"
-                  size={25}
-                  color="#041026"
-                  onPress={() => this.props.navigation.navigate('Updatecar')}
-                />
-                <Ionicons name="trash-outline" size={25} color="red" />
               </View>
-            )
-          }}
-        />
-        <View style={styles.footer}>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Addcar')}
-          >
-            <View style={styles.iconContainer}>
-              <Ionicons name="add" color="white" size={30} />
+              <Ionicons
+                name="settings-outline"
+                size={25}
+                color="#041026"
+                onPress={() => props.navigation.navigate('Updatecar')}
+              />
+              <Ionicons name="trash-outline" size={25} color="red" />
             </View>
-          </TouchableOpacity>
-        </View>
+          )
+        }}
+      />
+      <View style={styles.footer}>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate('Addcar')}
+        >
+          <View style={styles.iconContainer}>
+            <Ionicons name="add" color="white" size={30} />
+          </View>
+        </TouchableOpacity>
       </View>
-    )
-  }
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
