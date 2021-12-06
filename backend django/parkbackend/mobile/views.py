@@ -13,6 +13,7 @@ from django.db.models import Q
 from .serializers import ReservationSerialzer
 from web3 import Web3
 import json
+from datetime import datetime
 
 
 url = "https://ropsten.infura.io/v3/651599aa86d444b1b0808d31a98a916a"
@@ -28,7 +29,7 @@ web3 = Web3(Web3.HTTPProvider(url))
 address = web3.toChecksumAddress("0xDE51c072918dBaF3912EB12eA34d8758e01ace4d")
 contract = web3.eth.contract(address=address, abi=abi["abi"])
 
-
+"""
 def checkIn(user_id):
     try:
         nonce = web3.eth.getTransactionCount(public_key)
@@ -65,24 +66,32 @@ def checkOut(user_id):
         return True
     except Exception():
         return False
+"""
 
 
-def getLogsOfUser(user_id):
-    logs_count = contract.functions.getCarLogsCount(str(user_id)).call()
-    logs = [
-        contract.functions.getCarLogs(str(user_id), index).call()
-        for index in range(logs_count)
-    ]
-    return logs
-
-class GetLogsViewSet(viewsets.ModelViewSet):
+class GetLogsView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
-    def post(self, request, *args, **kwargs):
-        request.user.
+
+    def get(self, request, *args, **kwargs):
+        user_id = str(request.user.id)
+        logs = self.get_logs_of_user(user_id)
+        responce = {}
+        for log in logs:
+            responce.update(
+                {"date": datetime.fromtimestamp(log[1]), "action": log[2]}
+            )
+        return Response(responce)
+
+    def get_logs_of_user(self, user_id):
+        logs_count = contract.functions.getCarLogsCount(str(user_id)).call()
+        logs = [
+            contract.functions.getCarLogs(str(user_id), index).call()
+            for index in range(logs_count)
+        ]
+        return logs
 
 
 class CarViewSet(viewsets.ModelViewSet):
-
     serializer_class = CarSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
