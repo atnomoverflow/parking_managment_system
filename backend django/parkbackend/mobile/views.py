@@ -14,6 +14,10 @@ from .serializers import ReservationSerialzer
 from web3 import Web3
 import json
 from datetime import datetime
+import os.path  
+
+
+data_folder = os.path.join('D:/projet blockchain/parking_managment_system/smart contract/build/contracts','ParkingLogs.json')
 
 
 url = "https://ropsten.infura.io/v3/651599aa86d444b1b0808d31a98a916a"
@@ -22,7 +26,7 @@ private_key = (
 )
 public_key = "0x9F26005108Ae77D4C59f484Ebc07D45450F4cebE"
 jsonFile = open(
-    "/home/atnomoverflow/Desktop/blockchain_parking_loat/smart contract/build/contracts/ParkingLogs.json"
+    data_folder
 )
 abi = json.load(jsonFile)
 web3 = Web3(Web3.HTTPProvider(url))
@@ -101,7 +105,7 @@ class CarViewSet(viewsets.ModelViewSet):
         for the currently authenticated user.
         """
         user = self.request.user
-        return Car.objects.filter(oner=user)
+        return Car.objects.filter(owner=user)
 
 
 class RegisterAPI(generics.GenericAPIView):
