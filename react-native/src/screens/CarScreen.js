@@ -1,4 +1,4 @@
-import React, { Component , useState , useEffect } from 'react'
+import React, { Component , useState , useEffect,useContext } from 'react'
 import {
   StyleSheet,
   Text,
@@ -8,6 +8,7 @@ import {
   FlatList,
 } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import AuthContext from '../context/AuthContext'
 
 export default class CarScreen extends Component {
   constructor(props) {
@@ -21,8 +22,11 @@ export default class CarScreen extends Component {
 
   async getCars() {
     try {
+      const {authTokens} = useContext(AuthContext)
       const response = await fetch('http://127.0.0.1:8000/car/', {
-      method: 'POST'});
+      method: 'GET',
+      headers:{Authorization: `Bearer ${authTokens?.access}`}}
+      );
       const json = await response.json();
       this.setState({ data: json.cars });
     } catch (error) {

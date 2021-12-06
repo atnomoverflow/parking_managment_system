@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState , useContext} from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../../components/Background'
@@ -8,17 +8,21 @@ import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 import BackButton from '../../components/BackButton'
 import { theme } from '../../core/theme'
+import AuthContext from '../../context/AuthContext'
 
 export default function AddcarScreen({ navigation }) {
+
   const [matricule, setMatricule] = useState("")
   const [model, setModel] = useState("")
   const [mark, setMark] = useState("")
-
+  const {authTokens} = useContext(AuthContext)
+  console.log(authTokens?.access)
   const inserData = () => {
     fetch('http://127.0.0.1:8000/car/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authTokens?.access}`
       },
       body: JSON.stringify({ matricule: matricule, model: model, mark: mark }),
     })
