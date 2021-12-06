@@ -22,7 +22,7 @@ from rest_framework_simplejwt.views import (
 )
 
 router = routers.DefaultRouter()
-router.register(r"car", view.CarViewSet, basename='Car')
+router.register(r"car", view.CarViewSet, basename="Car")
 
 urlpatterns = [
     path("", include(router.urls)),
@@ -41,5 +41,5 @@ urlpatterns = [
     ),
     path("register", view.RegisterAPI.as_view()),
     path("user", view.Userdetail.as_view()),
-    path("car", view.GetLogsView),
+    path("updateprofile", view.ChangeProfileView.as_view()),
 ]

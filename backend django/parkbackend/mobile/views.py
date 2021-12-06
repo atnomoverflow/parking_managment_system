@@ -1,9 +1,10 @@
-from rest_framework import viewsets, generics
-from .models import Car, ProfileUser, Reservation
+from rest_framework import serializers, viewsets, generics
+from .models import Car, ProfileUser, Reservation, User
 from .serializers import (
     CarSerializer,
     RegisterSerializer,
     UserProfileSerializer,
+    ChangeUserProfileSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +15,7 @@ from .serializers import ReservationSerialzer
 from web3 import Web3
 import json
 from datetime import datetime
+from rest_framework import status
 
 
 url = "https://ropsten.infura.io/v3/651599aa86d444b1b0808d31a98a916a"
@@ -101,7 +103,7 @@ class CarViewSet(viewsets.ModelViewSet):
         for the currently authenticated user.
         """
         user = self.request.user
-        return Car.objects.filter(oner=user)
+        return Car.objects.filter(owner=user)
 
 
 class RegisterAPI(generics.GenericAPIView):
@@ -162,7 +164,7 @@ class ReservationView(generics.RetrieveAPIView):
         )
 
 
-class ReservationsListView(View):
+class ReservationsListView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     serializers = ReservationSerialzer
 
@@ -173,3 +175,33 @@ class ReservationsListView(View):
         """
         user = self.request.user
         return Reservation.objects.filter(oner=user)
+
+
+class ChangeProfileView(generics.UpdateAPIView):
+    """
+    An endpoint for changing password.
+    """
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ChangeUserProfileSerializer
+    model = User
+
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
+
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # set_password also hashes the password that the user will get
+        self.object.set_password(serializer.data.get("password"))
+        self.object.username = serializer.data.get("username")
+        self.object.email = serializer.data.get("email")
+        self.object.save()
+        response = {
+            "status": "success",
+            "code": status.HTTP_200_OK,
+            "message": "Profile updated successfully",
+            "data": [],
+        }
+        return Response(response)

@@ -11,10 +11,27 @@ import { theme } from '../core/theme'
 import { emailValidator } from '../helpers/emailValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { nameValidator } from '../helpers/nameValidator'
+import useAxios from '../utils/useAxios'
 
 export default function EditProfileScreen({ navigation }) {
-
-  
+  let api = useAxios()
+  const [Email, setEmail] = useState("")
+  const [Password, setPassword] = useState("")
+  const [Username, setUsername] = useState("")
+  const setUserProfile = async () => {
+    await api.put("/updateprofile", {
+      username: Username,
+      password: Password,
+      email: Email
+    })
+      .then(
+        (responce) => console.log(responce)
+        
+      ).catch(
+        (error) => console.log(error)
+      )
+    //console.log(userProfileResponce)
+  }
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
@@ -23,12 +40,15 @@ export default function EditProfileScreen({ navigation }) {
       <TextInput
         label="UserName"
         returnKeyType="next"
-       
+        value={Username}
+        onChangeText={(text) => setUsername(text)}
+
       />
       <TextInput
         label="Email"
         returnKeyType="next"
-        
+        value={Email}
+        onChangeText={(text) => setEmail(text)}
         autoCapitalize="none"
         autoCompleteType="email"
         textContentType="emailAddress"
@@ -37,16 +57,18 @@ export default function EditProfileScreen({ navigation }) {
       <TextInput
         label="Password"
         returnKeyType="done"
-        
+        value={Password}
+        onChangeText={(text) => setPassword(text)}
         secureTextEntry
       />
       <Button
         mode="contained"
         style={{ marginTop: 24 }}
+        onPress={setUserProfile}
       >
         Update
       </Button>
-      
+
     </Background>
   )
 }

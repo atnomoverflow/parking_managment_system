@@ -71,3 +71,11 @@ class ReservationSerialzer(serializers.ModelSerializer):
         return data
 
 
+class ChangeUserProfileSerializer(serializers.Serializer):
+    model = User
+    """
+    Serializer for password change endpoint.
+    """
+    password = serializers.CharField()
+    email = serializers.EmailField()
+    username = serializers.EmailField()
