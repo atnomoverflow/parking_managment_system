@@ -18,16 +18,18 @@ export default function AddcarScreen({ navigation }) {
   const {authTokens} = useContext(AuthContext)
   console.log(authTokens?.access)
   const inserData = () => {
+    console.log({matricule,model,mark})
     fetch('http://127.0.0.1:8000/car/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authTokens?.access}`
+        'Authorization': `Bearer ${authTokens?.access}`,
       },
       body: JSON.stringify({ matricule: matricule, model: model, mark: mark }),
     })
       .then((resp) => resp.json())
       .then((data) => navigation.navigate('Car'))
+     
   }
 
   return (
@@ -38,26 +40,23 @@ export default function AddcarScreen({ navigation }) {
       <TextInput
         label="Matricule"
         returnKeyType="next"
-        value={matricule.value}
+        value={matricule}
         onChangeText={(text) => setMatricule(text)}
-        error={!!matricule.error}
-        errorText={matricule.error}
+        
       />
       <TextInput
         label="Model"
         returnKeyType="next"
-        value={model.value}
+        value={model}
         onChangeText={(text) => setModel(text)}
-        error={!!model.error}
-        errorText={model.error}
+      
       />
       <TextInput
         label="Mark"
         returnKeyType="next"
-        value={mark.value}
-        onChangeText={(text) => setMark({ value: text, error: '' })}
-        error={!!mark.error}
-        errorText={mark.error}
+        value={mark}
+        onChangeText={(text) => setMark(text)}
+        
       />
       <Button mode="contained" style={{ marginTop: 24 }} onPress={() => inserData()}>
         Add

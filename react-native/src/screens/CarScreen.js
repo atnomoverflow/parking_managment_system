@@ -10,37 +10,22 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AuthContext from '../context/AuthContext'
 
-export default class CarScreen extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      data: [],
-      isLoading: true
-    };
-  }
-
-  async getCars() {
-    try {
-      const {authTokens} = useContext(AuthContext)
-      const response = await fetch('http://127.0.0.1:8000/car/', {
+export default function CarScreen({navigation})  {
+  
+  const [data, setData] = useState ([])
+useEffect(() => {
+	fetch('http://127.0.0.1:8000/car/', {
       method: 'GET',
-      headers:{Authorization: `Bearer ${authTokens?.access}`}}
-      );
-      const json = await response.json();
-      this.setState({ data: json.cars });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  }
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authTokens?.access}`,
+      }
+    })
+	.then((resp) => resp.json())
+     .then(car => {setData(car)})},[])
+	 
 
-  componentDidMount() {
-    this.getCars();
-  }
-
-  renderGroupMembers = (group) => {
+  let renderGroupMembers ((group) => {
     if (group.members) {
       return (
         <View style={styles.groupMembersContent}>
@@ -57,10 +42,10 @@ export default class CarScreen extends Component {
       )
     }
     return null
-  }
+  })
 
-  render() {
-    const { data, isLoading } = this.state;
+  
+
     return (
       <View>
         <FlatList
@@ -96,7 +81,7 @@ export default class CarScreen extends Component {
                   name="settings-outline"
                   size={25}
                   color="#041026"
-                  onPress={() => this.props.navigation.navigate('Updatecar')}
+                  onPress={() => navigation.navigate('Updatecar')}
                 />
                 <Ionicons name="trash-outline" size={25} color="red" />
               </View>
@@ -105,7 +90,7 @@ export default class CarScreen extends Component {
         />
         <View style={styles.footer}>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Addcar')}
+            onPress={() => navigation.navigate('Addcar')}
           >
             <View style={styles.iconContainer}>
               <Ionicons name="add" color="white" size={30} />
@@ -115,7 +100,7 @@ export default class CarScreen extends Component {
       </View>
     )
   }
-}
+
 
 const styles = StyleSheet.create({
   root: {
