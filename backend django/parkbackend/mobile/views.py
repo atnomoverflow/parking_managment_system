@@ -1,4 +1,4 @@
-from rest_framework import serializers, viewsets, generics
+from rest_framework import status, viewsets, generics
 from .models import Car, ProfileUser, Reservation, User
 from .serializers import (
     CarSerializer,
@@ -9,16 +9,18 @@ from .serializers import (
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.views import View
 from django.db.models import Q
 from .serializers import ReservationSerialzer
 from web3 import Web3
 import json
 from datetime import datetime
-import os.path  
+import os.path
 
 
-data_folder = os.path.join('D:/projet blockchain/parking_managment_system/smart contract/build/contracts','ParkingLogs.json')
+data_folder = os.path.join(
+    "/home/atnomoverflow/Desktop/blockchain_parking_loat/smart contract/build/contracts",
+    "ParkingLogs.json",
+)
 
 
 url = "https://ropsten.infura.io/v3/651599aa86d444b1b0808d31a98a916a"
@@ -26,9 +28,7 @@ private_key = (
     "287f0d46bb54e5d8f3b0bd47947d74e441f0be65713ca75b95f9660e026ac6a0"
 )
 public_key = "0x9F26005108Ae77D4C59f484Ebc07D45450F4cebE"
-jsonFile = open(
-    data_folder
-)
+jsonFile = open(data_folder)
 abi = json.load(jsonFile)
 web3 = Web3(Web3.HTTPProvider(url))
 address = web3.toChecksumAddress("0xDE51c072918dBaF3912EB12eA34d8758e01ace4d")
@@ -169,7 +169,7 @@ class ReservationView(generics.RetrieveAPIView):
 
 class ReservationsListView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
-    serializers = ReservationSerialzer
+    serializer_class = ReservationSerialzer
 
     def get_queryset(self):
         """
@@ -184,6 +184,7 @@ class ChangeProfileView(generics.UpdateAPIView):
     """
     An endpoint for changing password.
     """
+
     permission_classes = (IsAuthenticated,)
     serializer_class = ChangeUserProfileSerializer
     model = User
@@ -196,9 +197,8 @@ class ChangeProfileView(generics.UpdateAPIView):
         self.object = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid()
-        print(serializer.errors)
+        print(serializer.data)
         serializer.is_valid(raise_exception=True)
-        # set_password also hashes the password that the user will get
         self.object.set_password(serializer.data.get("password"))
         self.object.username = serializer.data.get("username")
         self.object.email = serializer.data.get("email")
