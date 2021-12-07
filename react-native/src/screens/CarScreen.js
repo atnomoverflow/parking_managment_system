@@ -28,7 +28,7 @@ useEffect(() => {
       }
     })
 	.then((resp) => resp.json())
-     .then(car => {setData(car)})},[])
+     .then(car => {setData(car)})},[Data])
 	 
    const deleteData = (id) => {
     fetch(`http://127.0.0.1:8000/car/${id}`, {

@@ -17,7 +17,7 @@ export default function LogsScreen() {
   ])
    const { authTokens } = useContext(AuthContext)
   useEffect(() => {
-	fetch('http://127.0.0.1:8000/logs/', {
+	fetch('http://127.0.0.1:8000/logs', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export default function LogsScreen() {
       }
     })
 	.then((resp) => resp.json())
-     .then(log => {setData(log)})},[])
+     .then(log => {setData(log)})},[data])
 
     
 

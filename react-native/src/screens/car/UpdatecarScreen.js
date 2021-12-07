@@ -31,6 +31,7 @@ const {authTokens} = useContext(AuthContext)
       body: JSON.stringify({matricule: matricule, model: model, mark: mark }),
     })
       .then((resp) => resp.json())
+      .then((data) => props.navigation.navigate('Car'))
      
   }
 
