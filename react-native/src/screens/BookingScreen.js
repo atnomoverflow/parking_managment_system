@@ -7,6 +7,9 @@ import Button from '../components/Button'
 import TextInput from '../components/TextInput'
 import BackButton from '../components/BackButton'
 
+
+
+
 export default function BookingScreen({ navigation }) {
   return (
     <Background>

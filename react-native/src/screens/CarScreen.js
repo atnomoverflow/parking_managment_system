@@ -1,4 +1,4 @@
-import React, { Component , useState , useEffect,useContext } from 'react'
+import React, { Component, useState, useEffect, useContext } from 'react'
 import {
   StyleSheet,
   Text,
@@ -10,9 +10,15 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AuthContext from '../context/AuthContext'
 
-export default function CarScreen({navigation})  {
-  
-  const [data, setData] = useState ([])
+export default function CarScreen({navigation}) {
+
+
+  const [Data, setData] = useState([])
+ 
+  const { authTokens } = useContext(AuthContext)
+
+
+
 useEffect(() => {
 	fetch('http://127.0.0.1:8000/car/', {
       method: 'GET',
@@ -24,8 +30,20 @@ useEffect(() => {
 	.then((resp) => resp.json())
      .then(car => {setData(car)})},[])
 	 
+   const deleteData = (id) => {
+    fetch(`http://127.0.0.1:8000/car/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authTokens?.access}`,
+      },
+    })
+      .then((data) => navigation.navigate('Car'))
+     
+  }
 
-  let renderGroupMembers ((group) => {
+
+  const renderGroupMembers = (group) => {
     if (group.members) {
       return (
         <View style={styles.groupMembersContent}>
@@ -42,65 +60,62 @@ useEffect(() => {
       )
     }
     return null
-  })
-
-  
-
-    return (
-      <View>
-        <FlatList
-          style={styles.root}
-          data={this.data}
-          extraData={this}
-          ItemSeparatorComponent={() => {
-            return <View style={styles.separator} />
-          }}
-         
-          renderItem={(item) => {
-            const Group = item.item
-            let mainContentStyle
-            if (Group.attachment) {
-              mainContentStyle = styles.mainContent
-            }
-            return (
-              <View style={styles.container}>
-                <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Circle-icons-car.svg' }} style={styles.avatar} />
-                <View style={styles.content}>
-                  <View style={mainContentStyle}>
-                    <View style={styles.text}>
-                      <Text style={styles.groupName}>{Group.model}</Text>
-                    </View>
-                    <Text style={styles.countMembers}>
-                      Matricule: {Group.matricule}
-                    </Text>
-                    <Text style={styles.timeAgo}>Mark : {Group.mark}</Text>
-                    {this.renderGroupMembers(Group)}
-                  </View>
-                </View>
-                <Ionicons
-                  name="settings-outline"
-                  size={25}
-                  color="#041026"
-                  onPress={() => navigation.navigate('Updatecar')}
-                />
-                <Ionicons name="trash-outline" size={25} color="red" />
-              </View>
-            )
-          }}
-        />
-        <View style={styles.footer}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Addcar')}
-          >
-            <View style={styles.iconContainer}>
-              <Ionicons name="add" color="white" size={30} />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
   }
 
+  return (
+    <View>
+      <FlatList
+        style={styles.root}
+        data={Data}
+
+        ItemSeparatorComponent={() => {
+          return <View style={styles.separator} />
+        }}
+
+        renderItem={(item) => {
+          const Group = item.item
+          let mainContentStyle
+          if (Group.attachment) {
+            mainContentStyle = styles.mainContent
+          }
+          return (
+            <View style={styles.container}>
+              <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Circle-icons-car.svg' }} style={styles.avatar} />
+              <View style={styles.content}>
+                <View style={mainContentStyle}>
+                  <View style={styles.text}>
+                    <Text style={styles.groupName}>{Group.model}</Text>
+                  </View>
+                  <Text style={styles.countMembers}>
+                    Matricule: {Group.matricule}
+                  </Text>
+                  <Text style={styles.timeAgo}>Mark : {Group.mark}</Text>
+                  {renderGroupMembers(Group)}
+                </View>
+              </View>
+              <Ionicons
+                name="settings-outline"
+                size={25}
+                color="#041026"
+                onPress={() => navigation.navigate('Updatecar',{data : Group} )}
+              />
+              <Ionicons name="trash-outline" size={25} color="red" onPress={() => deleteData(Group.id)}/>
+            </View>
+          )
+        }}
+      />
+      <View style={styles.footer}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Addcar')}
+        >
+          <View style={styles.iconContainer}>
+            <Ionicons name="add" color="white" size={30} />
+          </View>
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
+}
 
 const styles = StyleSheet.create({
   root: {
@@ -178,3 +193,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 })
+

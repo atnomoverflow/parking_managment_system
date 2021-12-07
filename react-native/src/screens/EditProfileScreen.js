@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState , useEffect} from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../components/Background'
@@ -23,15 +23,24 @@ export default function EditProfileScreen({ navigation }) {
       username: Username,
       password: Password,
       email: Email
-    })
-      .then(
-        (responce) => console.log(responce)
-        
+    }).then(
+        (responce) => console.log(responce)  
       ).catch(
         (error) => console.log(error)
       )
-    //console.log(userProfileResponce)
   }
+  useEffect(() => {  
+   api.get("/user")
+      .then(
+        (responce) => {
+          console.log(responce)
+          setUsername(responce.data.user.username)
+          setEmail(responce.data.user.email)
+        }
+    )
+
+  },[])
+
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />

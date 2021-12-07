@@ -42,4 +42,5 @@ urlpatterns = [
     path("register", view.RegisterAPI.as_view()),
     path("user", view.Userdetail.as_view()),
     path("updateprofile", view.ChangeProfileView.as_view()),
+    path("logs", view.GetLogsView.as_view()),
 ]

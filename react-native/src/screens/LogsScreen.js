@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState , useEffect, useContext} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,40 +8,43 @@ import {
   Alert,
   ScrollView,
   FlatList,
-} from 'react-native';
+} from 'react-native'
+import AuthContext from '../context/AuthContext';
 
-export default class LogsScreen extends Component {
+export default function LogsScreen() {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      calls: [
-        {id:1,  name: "CHECKOUT",   date:"12 jan", time:'11:14 am', in:false, image:"https://www.pngall.com/wp-content/uploads/2/Parking-Only-Sign.png"},
-        {id:2,  name: "CHECKIN",  date:"12 jul", time:'15:58 am', in:true, image:"https://www.pngall.com/wp-content/uploads/2/Parking-Only-Sign.png"} ,
-        {id:3,  name: "CHECKOUT", date:"12 aug", time:'12:45 am', in:false,  image:"https://www.pngall.com/wp-content/uploads/2/Parking-Only-Sign.png"} ,
-        {id:4,  name: "CHECKIN", date:"12 feb", time:'08:32 am', in:true, image:"https://www.pngall.com/wp-content/uploads/2/Parking-Only-Sign.png"} ,
-        {id:5,  name: "CHECKOUT",   date:"12 oct", time:'07:45 am', in:false,  image:"https://www.pngall.com/wp-content/uploads/2/Parking-Only-Sign.png"} ,
-        {id:6,  name: "CHECKIN",   date:"12 jan", time:'09:54 am', in:true, image:"https://www.pngall.com/wp-content/uploads/2/Parking-Only-Sign.png"} ,
-      ]
-    };
-  }
+ const [data, setData] = useState([
+  ])
+   const { authTokens } = useContext(AuthContext)
+  useEffect(() => {
+	fetch('http://127.0.0.1:8000/logs/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authTokens?.access}`,
+      }
+    })
+	.then((resp) => resp.json())
+     .then(log => {setData(log)})},[])
 
-  renderItem = ({item}) => {
+    
+
+ const renderItem = ({item}) => {
     var callIcon = "https://img.icons8.com/ios-glyphs/30/fa314a/circled-up.png";
-    if(item.in == true) {
+    if(item.action == 'CheckIn') {
       callIcon = "https://img.icons8.com/color/452/low-importance--v1.png";
     }
     return (
       <TouchableOpacity>
         <View style={styles.row}>
-          <Image source={{ uri: item.image }} style={styles.pic} />
+          <Image source={{ uri: "https://www.pngall.com/wp-content/uploads/2/Parking-Only-Sign.png" }} style={styles.pic} />
           <View>
             <View style={styles.nameContainer}>
-              <Text style={styles.nameTxt}>{item.name}</Text>
+              <Text style={styles.nameTxt}>{item.action}</Text>
             </View>
             <View style={styles.end}>
               <Image style={[styles.icon, {marginLeft:15, marginRight:5, width:14, height:14}]} source={{uri:"https://img.icons8.com/fluency/48/fa314a/clock--v2.png"}}/>
-              <Text style={styles.time}>{item.date} {item.time}</Text>
+              <Text style={styles.time}>{item.date} </Text>
             </View>
           </View>
           <Image style={[styles.icon, { marginRight: 50 }]} source={{uri: callIcon}}/>
@@ -50,20 +53,20 @@ export default class LogsScreen extends Component {
     );
   }
 
-  render() {
+  
     return(
       <View style={{ flex: 1 }} >
         <FlatList 
-          extraData={this.state}
-          data={this.state.calls}
+         
+          data={data}
           keyExtractor = {(item) => {
             return item.id;
           }}
-          renderItem={this.renderItem}/>
+          renderItem={renderItem}/>
       </View>
     );
   }
-}
+
 
 const styles = StyleSheet.create({
   row: {

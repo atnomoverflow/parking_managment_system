@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../../components/Background'
@@ -8,42 +8,63 @@ import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 import BackButton from '../../components/BackButton'
 import { theme } from '../../core/theme'
+import AuthContext from '../../context/AuthContext'
 
-export default function UpdatecarScreen({ navigation }) {
-  const [matricule, setMatricule] = useState({ value: '', error: '' })
-  const [model, setModel] = useState({ value: '', error: '' })
-  const [mark, setMark] = useState({ value: '', error: '' })
+export default function UpdatecarScreen(props,{ navigation }) {
+  const data = props.route.params.data ;
+  const [matricule, setMatricule] = useState(data.matricule)
+  const [model, setModel] = useState(data.model)
+  const [mark, setMark] = useState(data.mark)
+  const [id, setId] = useState(data.id)
+ 
+
+const {authTokens} = useContext(AuthContext)
+  console.log(authTokens?.access)
+  const updateData = (id) => {
+    console.log({matricule,model,mark})
+    fetch(`http://127.0.0.1:8000/car/${id}/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authTokens?.access}`,
+      },
+      body: JSON.stringify({matricule: matricule, model: model, mark: mark }),
+    })
+      .then((resp) => resp.json())
+     
+  }
+
+
+
+
   return (
     <Background>
-      <BackButton goBack={navigation.goBack} />
+      <BackButton/>
       <Logo />
       <Header>Update Car</Header>
       <TextInput
         label="Matricule"
         returnKeyType="next"
-        value={matricule.value}
-        onChangeText={(text) => setMatricule({ value: text, error: '' })}
-        error={!!matricule.error}
-        errorText={matricule.error}
+        value={matricule}
+         onChangeText={(text) => setMatricule(text)}
+
       />
       <TextInput
         label="Model"
         returnKeyType="next"
-        value={model.value}
-        onChangeText={(text) => setModel({ value: text, error: '' })}
-        error={!!model.error}
-        errorText={model.error}
+        value={model}
+        onChangeText={(text) => setModel(text)}
+     
       />
       <TextInput
         label="Mark"
         returnKeyType="next"
-        value={mark.value}
-        onChangeText={(text) => setMark({ value: text, error: '' })}
-        error={!!mark.error}
-        errorText={mark.error}
+        value={mark}
+        onChangeText={(text) => setMark(text)}
+      
       />
-      <Button mode="contained" style={{ marginTop: 24 }}>
-        Add
+      <Button mode="contained" style={{ marginTop: 24 }} onPress={() => updateData(id)}>
+        Update
       </Button>
     </Background>
   )
