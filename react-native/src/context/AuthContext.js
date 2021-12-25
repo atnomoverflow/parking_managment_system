@@ -15,6 +15,7 @@ import {
   AddcarScreen,
   UpdatecarScreen,
   EditProfileScreen,
+  BookingListScreen,
 } from '../screens'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -118,6 +119,7 @@ export const AuthProvider = ({ children }) => {
             <Stack.Screen name="Addcar" component={AddcarScreen} />
             <Stack.Screen name="Updatecar" component={UpdatecarScreen} />
             <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+            <Stack.Screen name="BookingPark" component={BookingScreen} />
           </Stack.Navigator>
         ) : (
           <Stack.Navigator>

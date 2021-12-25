@@ -54,9 +54,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class ReservationSerialzer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Reservation
-        fields = "__all__"
+        fields = ["parking_space_number","finish_date","start_date","owner"]
 
     # Additional custom validator for start_date / finish_date fields
     def clean(self):

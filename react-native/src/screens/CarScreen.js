@@ -10,38 +10,34 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import AuthContext from '../context/AuthContext'
 
-export default function CarScreen({navigation}) {
-
-
+export default function CarScreen({ navigation }) {
   const [Data, setData] = useState([])
- 
+
   const { authTokens } = useContext(AuthContext)
 
-
-
-useEffect(() => {
-	fetch('http://127.0.0.1:8000/car/', {
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/car/', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authTokens?.access}`,
-      }
+        Authorization: `Bearer ${authTokens?.access}`,
+      },
     })
-	.then((resp) => resp.json())
-     .then(car => {setData(car)})},[Data])
-	 
-   const deleteData = (id) => {
+      .then((resp) => resp.json())
+      .then((car) => {
+        setData(car)
+      })
+  }, [Data])
+
+  const deleteData = (id) => {
     fetch(`http://127.0.0.1:8000/car/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authTokens?.access}`,
+        Authorization: `Bearer ${authTokens?.access}`,
       },
-    })
-      .then((data) => navigation.navigate('Car'))
-     
+    }).then((data) => navigation.navigate('Car'))
   }
-
 
   const renderGroupMembers = (group) => {
     if (group.members) {
@@ -67,11 +63,9 @@ useEffect(() => {
       <FlatList
         style={styles.root}
         data={Data}
-
         ItemSeparatorComponent={() => {
           return <View style={styles.separator} />
         }}
-
         renderItem={(item) => {
           const Group = item.item
           let mainContentStyle
@@ -80,11 +74,16 @@ useEffect(() => {
           }
           return (
             <View style={styles.container}>
-              <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Circle-icons-car.svg' }} style={styles.avatar} />
+              <Image
+                source={{
+                  uri: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Circle-icons-car.svg',
+                }}
+                style={styles.avatar}
+              />
               <View style={styles.content}>
                 <View style={mainContentStyle}>
                   <View style={styles.text}>
-                    <Text style={styles.groupName}>{Group.model}</Text>
+                    <Text style={styles.groupName}>Model : {Group.model}</Text>
                   </View>
                   <Text style={styles.countMembers}>
                     Matricule: {Group.matricule}
@@ -97,17 +96,22 @@ useEffect(() => {
                 name="settings-outline"
                 size={25}
                 color="#041026"
-                onPress={() => navigation.navigate('Updatecar',{data : Group} )}
+                onPress={() =>
+                  navigation.navigate('Updatecar', { data: Group })
+                }
               />
-              <Ionicons name="trash-outline" size={25} color="red" onPress={() => deleteData(Group.id)}/>
+              <Ionicons
+                name="trash-outline"
+                size={25}
+                color="red"
+                onPress={() => deleteData(Group.id)}
+              />
             </View>
           )
         }}
       />
       <View style={styles.footer}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Addcar')}
-        >
+        <TouchableOpacity onPress={() => navigation.navigate('Addcar')}>
           <View style={styles.iconContainer}>
             <Ionicons name="add" color="white" size={30} />
           </View>
@@ -173,14 +177,13 @@ const styles = StyleSheet.create({
   },
   footer: {
     position: 'relative',
-    float: 'right',
     bottom: 0,
     width: '100%',
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'center',
     paddingHorizontal: 20,
-    backgroundColor: 'rgba(52, 52, 52, alpha)',
+    backgroundColor: 'rgba(0,0,0,0)',
     marginTop: 20,
   },
   iconContainer: {
@@ -193,4 +196,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 })
-

@@ -18,7 +18,7 @@ import os.path
 
 
 data_folder = os.path.join(
-    "/home/atnomoverflow/Desktop/blockchain_parking_loat/smart contract/build/contracts",
+    "D:/projet blockchain/parking_managment_system/smart contract/build/contracts",
     "ParkingLogs.json",
 )
 
@@ -79,12 +79,14 @@ class GetLogsView(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         user_id = str(request.user.id)
+        print(user_id)
         logs = self.get_logs_of_user(user_id)
-        responce = {}
+        responce = []
         for log in logs:
-            responce.update(
-                {"date": datetime.fromtimestamp(log[1]), "action": log[2]}
+            responce.append(
+                {"id":log[0],"date": datetime.fromtimestamp(log[1]), "action": log[2]}
             )
+        print(responce)
         return Response(responce)
 
     def get_logs_of_user(self, user_id):
@@ -139,15 +141,18 @@ class Userdetail(generics.RetrieveAPIView):
 
 class ReservationView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
-
+    serializer_class = ReservationSerialzer
+    
     def post(self, request):
-        reservation_form = ReservationSerialzer(data=request.data)
+        reservation_form = ReservationSerialzer(data=request.data, context={'request': request})
+        reservation_form.is_valid()
+        print(reservation_form.errors)
         reservation_form.is_valid(raise_exception=True)
-        start_date = reservation_form.cleaned_data["start_date"]
-        finish_date = reservation_form.cleaned_data["finish_date"]
-        parking_space_number = reservation_form.cleaned_data[
+        start_date = request.data.get("start_date")
+        finish_date = request.data.get("finish_date")
+        parking_space_number = request.data.get(
             "parking_space_number"
-        ]
+        )
         if Reservation.objects.filter(
             Q(
                 parking_space_number=parking_space_number,
@@ -159,15 +164,18 @@ class ReservationView(generics.RetrieveAPIView):
             )
         ).exists():
             msg = "Dates overlaps. Try other dates and / or parking space."
+            success  = False
         else:
             msg = "Reservation taken."
             reservation_form.save()
+            success = True
+        print(msg)    
         return Response(
-            {"message": msg, "form": reservation_form},
+            {"message": msg, "form": reservation_form.data, "success" : success},
         )
 
 
-class ReservationsListView(generics.GenericAPIView):
+class ReservationsListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = ReservationSerialzer
 
@@ -177,7 +185,7 @@ class ReservationsListView(generics.GenericAPIView):
         for the currently authenticated user.
         """
         user = self.request.user
-        return Reservation.objects.filter(oner=user)
+        return Reservation.objects.filter(owner=user)
 
 
 class ChangeProfileView(generics.UpdateAPIView):

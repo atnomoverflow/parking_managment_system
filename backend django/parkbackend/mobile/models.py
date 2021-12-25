@@ -20,8 +20,8 @@ class Car(models.Model):
 
 
 class Reservation(models.Model):
-    start_date = models.DateField()
-    finish_date = models.DateField()
+    start_date = models.DateTimeField()
+    finish_date = models.DateTimeField()
     parking_space_number = models.CharField(max_length=4)
     owner = models.ForeignKey(
         User, null=True, on_delete=models.CASCADE

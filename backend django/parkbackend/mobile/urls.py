@@ -43,4 +43,6 @@ urlpatterns = [
     path("user", view.Userdetail.as_view()),
     path("updateprofile", view.ChangeProfileView.as_view()),
     path("logs", view.GetLogsView.as_view()),
+    path("reservation", view.ReservationView.as_view()),
+    path("reservationlist", view.ReservationsListView.as_view()),
 ]

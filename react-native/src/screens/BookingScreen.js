@@ -1,5 +1,5 @@
-import React, { useState , useContext} from 'react'
-import { View, Platform } from 'react-native'
+import React, { useState, useContext } from 'react'
+import { View, Platform ,Text} from 'react-native'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
 import Header from '../components/Header'
@@ -7,58 +7,75 @@ import Button from '../components/Button'
 import TextInput from '../components/TextInput'
 import BackButton from '../components/BackButton'
 import AuthContext from '../context/AuthContext'
-import DatePicker from 'react-native-datepicker'
-
-
 
 export default function BookingScreen({ navigation }) {
-  const [open, setOpen] = useState(false)
-const [parkNumber, setParkNumber] = useState("")
-  const [dateIn, setDateIn] = useState("")
-  const [dateOut, setDateOut] = useState("")
-  const {authTokens} = useContext(AuthContext)
+  const [parkNumber, setParkNumber] = useState('')
+  const [dateIn, setDateIn] = useState('')
+  const [dateOut, setDateOut] = useState('')
+  const { authTokens } = useContext(AuthContext)
   console.log(authTokens?.access)
+  const [error, setError] = useState(false)
+  const [errorMsg, seterrorMsg] = useState('')
   const inserData = () => {
-    console.log({matricule,model,mark})
-    fetch('http://127.0.0.1:8000/reservation/', {
+    
+    fetch('http://127.0.0.1:8000/reservation', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authTokens?.access}`,
+        Authorization: `Bearer ${authTokens?.access}`,
       },
-      body: JSON.stringify({ dateIn: dateIn, dateOut: dateOut, parkNumber: parkNumber }),
+      body: JSON.stringify({
+        start_date: dateIn,
+        finish_date: dateOut,
+        parking_space_number: parkNumber,
+      }),
     })
-      .then((resp) => resp.json())
-      .then((data) => navigation.navigate('Booking'))
-     
+      .then(async (resp) => {let rep = await resp.json()
+      console.log(rep)
+      if(rep.success)
+          {navigation.navigate('Booking')}
+      else{
+          setError(true);
+          seterrorMsg(rep.message)
+          } 
+      })
+      
+      
   }
 
-
-
   return (
-    <DatePicker
-        style={{width: 200}}
-        date={dateIn}
-        mode="date"
-        placeholder="select date"
-        format="YYYY-MM-DD"
-        minDate="2016-05-01"
-        maxDate="2016-06-01"
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        customStyles={{
-          dateIcon: {
-            position: 'absolute',
-            left: 0,
-            top: 4,
-            marginLeft: 0
-          },
-          dateInput: {
-            marginLeft: 36
-          }
-          // ... You can check the source to find the other keys.
-        }}
-        onDateChange={(date) => {setDateIn(date)}}
+    <Background>
+      <BackButton goBack={navigation.goBack} />
+      <Logo />
+      <Header>Book your parking</Header>
+      {!error ? null : <Text>Parck place allready  Reserved</Text>}
+      <input
+        label="Date In"
+        type="datetime-local"
+        value={dateIn}
+        onChange={(e) => setDateIn(e.target.value) }
       />
+      <input
+        label="Date Out"
+        type="datetime-local"
+        value={dateOut}
+        onChange={(e) => setDateOut(e.target.value) }
+      />
+      <TextInput
+        label="Parck number"
+        returnKeyType="next"
+        type="date"
+        value={parkNumber}
+        onChangeText={(text) => setParkNumber(text)}
+      />
+
+      <Button
+        mode="contained"
+        style={{ marginTop: 24 }}
+        onPress={() => inserData()}
+      >
+        Submit
+      </Button>
+    </Background>
   )
 }

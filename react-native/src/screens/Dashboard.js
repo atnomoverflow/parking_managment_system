@@ -6,8 +6,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import HomeScreen from './HomeScreen'
 import CarScreen from './CarScreen'
 import ProfileScreen from './ProfileScreen'
-import BookingScreen from './BookingScreen'
 import LogsScreen from './LogsScreen'
+import BookingListScreen from './BookingListScreen'
+
 
 //Screen names
 const homeName = 'Home'
@@ -57,7 +58,7 @@ export default function Dashboard() {
       <Tab.Screen name={carName} component={CarScreen} />
       <Tab.Screen name={logsName} component={LogsScreen} />
       <Tab.Screen name={homeName} component={HomeScreen} />
-      <Tab.Screen name={bookingName} component={BookingScreen} />
+      <Tab.Screen name={bookingName} component={BookingListScreen} />
       <Tab.Screen name={profileName} component={ProfileScreen} />
     </Tab.Navigator>
   )
