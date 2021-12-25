@@ -8,9 +8,8 @@ class CarSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Car
-        fields = ["matricule", "model", "mark", "owner","id"]
-        extra_kwargs = {'id': {'read_only': True}}
-
+        fields = ["matricule", "model", "mark", "owner", "id"]
+        extra_kwargs = {"id": {"read_only": True}}
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -82,3 +81,9 @@ class ChangeUserProfileSerializer(serializers.Serializer):
     password = serializers.CharField()
     email = serializers.EmailField()
     username = serializers.CharField()
+
+
+class HasReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Car
+        fields = ("matricule")

@@ -5,6 +5,7 @@ from .serializers import (
     RegisterSerializer,
     UserProfileSerializer,
     ChangeUserProfileSerializer,
+    HasReservationSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticated
@@ -15,6 +16,8 @@ from web3 import Web3
 import json
 from datetime import datetime
 import os.path
+from rest_framework_api_key.permissions import HasAPIKey
+from django.core.exceptions import ObjectDoesNotExist
 
 
 data_folder = os.path.join(
@@ -186,6 +189,36 @@ class ReservationsListView(generics.ListAPIView):
         """
         user = self.request.user
         return Reservation.objects.filter(owner=user)
+
+
+class HasReservation(generics.GenericAPIView):
+    permission_classes = [HasAPIKey]
+    serializer_class = HasReservationSerializer
+
+    def get(self, request):
+        serializer = HasReservationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            car = Car.objects.get(matricule=serializer.data.get("matricule"))
+            reservation = Reservation.objects.filter(owner=car.owner)
+            now = datetime.datetime.now()
+            if reservation.start_date <= now < reservation.end_date:
+                return Response(
+                    {
+                        "status": "success",
+                    }
+                )
+            return Response(
+                {
+                    "status": "fail",
+                }
+            )
+        except ObjectDoesNotExist:
+            return Response(
+                {
+                    "status": "fail",
+                }
+            )
 
 
 class ChangeProfileView(generics.UpdateAPIView):
